@@ -1,4 +1,4 @@
-package A2practical;
+package practical11;
 
 import java.util.Random;
 
