@@ -1,5 +1,8 @@
-package practical13;
+// practical13/TimeSearches.java
+// CSC211 Practical 3 - Linear vs Binary Search Timings
+// Simple version for submission - 25 Feb 2026
 
+package practical13;
 
 import java.io.*;
 import java.text.*;
@@ -7,117 +10,148 @@ import java.util.*;
 
 public class timeSearches {
 
-    public static final int N = 32654;
-    public static Node[] nodes = new Node[N];
+    
+    public static Record[] bigList = new Record[32654];
 
-    public static class Node {
-        int key;
-        String data;
-        Node(int k, String d) { key = k; data = d; }
+    
+    public static class Record {
+        int number;
+        String text;
+
+        Record(int n, String t) {
+            number = n;
+            text = t;
+        }
     }
 
     public static void main(String[] args) {
 
-        // rImporting data from ulysses.numbered file using BufferedReader
-        try (BufferedReader br = new BufferedReader(new FileReader("ulysses-1.numbered"))) {
-            for (int i = 0; i < N; i++) {
-                String line = br.readLine();
+        // imported the buffered reader and read the file
+        try {
+            BufferedReader reader = new BufferedReader(
+                new FileReader("practical13/ulysses-1.numbered")
+            );
+
+            for (int i = 0; i < 32654; i++) {
+                String line = reader.readLine();
                 if (line == null) break;
+
+                
                 String[] parts = line.split(" ", 2);
                 int key = Integer.parseInt(parts[0]);
                 String data = (parts.length > 1) ? parts[1] : "";
-                nodes[i] = new Node(key, data);
+                bigList[i] = new Record(key, data);
             }
-            System.out.println("Successfully read " + N + " records.");
+            reader.close();
+            System.out.println("Read all 32654 lines successfully.");
+
         } catch (Exception e) {
-            System.out.println("ERROR reading ulysses.numbered: " + e.getMessage());
+            System.out.println("File not found! Make sure ulysses-1.numbered is inside the practical13 folder.");
             e.printStackTrace();
             return;
         }
 
-        // the 30 keys
-        Random rand = new Random();
-        int[] searchKeys = new int[30];
+        // 30 keys
+        Random random = new Random();
+        int[] testKeys = new int[30];
         for (int i = 0; i < 30; i++) {
-            searchKeys[i] = rand.nextInt(N) + 1;   // 1 to 32654
+            testKeys[i] = random.nextInt(32654) + 1;
         }
 
-        DecimalFormat fiveD = new DecimalFormat("0.00000");
-        DecimalFormat fourD = new DecimalFormat("0.0000");
-        int repetitions = 30;
+        // i am doing this for better formatting
+        DecimalFormat avgFormat = new DecimalFormat("0.00000");
+        DecimalFormat stdFormat = new DecimalFormat("0.0000");
+        int runs = 30;   // 30 repetitions as required
 
         
-        long runTimeLin = 0;
-        double runTime2Lin = 0.0;
-        for (int rep = 0; rep < repetitions; rep++) {
-            long start = System.currentTimeMillis();
-            for (int k = 0; k < 30; k++) {
-                linearSearch(searchKeys[k]);
+        long totalLinear = 0;
+        double totalLinearSq = 0.0;
+
+        for (int run = 0; run < runs; run++) {
+            long startTime = System.currentTimeMillis();
+
+            for (int i = 0; i < 30; i++) {
+                findLinear(testKeys[i]);
             }
-            long time = System.currentTimeMillis() - start;
-            runTimeLin += time;
-            runTime2Lin += (double) time * time;
+
+            long duration = System.currentTimeMillis() - startTime;
+            totalLinear += duration;
+            totalLinearSq += (double) duration * duration;
         }
-        double aveLin = (double) runTimeLin / repetitions;
-        double stdLin = Math.sqrt( (runTime2Lin - repetitions * aveLin * aveLin) / (repetitions - 1) );
 
-        System.out.println("\n\nLINEAR SEARCH STATISTICS");
-        System.out.println("________________________________________________");
-        System.out.println("Average time = " + fiveD.format(aveLin) + " ms ± " + fourD.format(stdLin) + " ms");
-        System.out.println("Standard deviation = " + fourD.format(stdLin) + " ms");
-        System.out.println("Repetitions = " + repetitions);
-        System.out.println("________________________________________________\n");
+        double avgLinear = (double) totalLinear / runs;
+        double stdLinear = Math.sqrt( (totalLinearSq - runs * avgLinear * avgLinear) / (runs - 1) );
 
-        // Sorts array
-        Arrays.sort(nodes, Comparator.comparingInt(a -> a.key));
-        System.out.println("Array sorted for binary search.");
+        System.out.println("\nLINEAR SEARCH RESULTS (unsorted array)");
+        System.out.println("--------------------------------------------------");
+        System.out.println("Average time = " + avgFormat.format(avgLinear) + " ms ± " + stdFormat.format(stdLinear) + " ms");
+        System.out.println("Standard deviation = " + stdFormat.format(stdLinear) + " ms");
+        System.out.println("Number of runs = " + runs);
+        System.out.println("--------------------------------------------------\n");
 
-        
-        long runTimeBin = 0;
-        double runTime2Bin = 0.0;
-        for (int rep = 0; rep < repetitions; rep++) {
-            long start = System.currentTimeMillis();
-            for (int k = 0; k < 30; k++) {
-                binarySearch(searchKeys[k]);
+        // sorted the array
+        Arrays.sort(bigList, (a, b) -> Integer.compare(a.number, b.number));
+        System.out.println("Array has been sorted for binary search.");
+
+        /// binary search Sorted
+        long totalBinary = 0;
+        double totalBinarySq = 0.0;
+
+        for (int run = 0; run < runs; run++) {
+            long startTime = System.currentTimeMillis();
+
+            for (int i = 0; i < 30; i++) {
+                findBinary(testKeys[i]);
             }
-            long time = System.currentTimeMillis() - start;
-            runTimeBin += time;
-            runTime2Bin += (double) time * time;
+
+            long duration = System.currentTimeMillis() - startTime;
+            totalBinary += duration;
+            totalBinarySq += (double) duration * duration;
         }
-        double aveBin = (double) runTimeBin / repetitions;
-        double stdBin = Math.sqrt( (runTime2Bin - repetitions * aveBin * aveBin) / (repetitions - 1) );
 
-        System.out.println("BINARY SEARCH STATISTICS");
-        System.out.println("________________________________________________");
-        System.out.println("Average time = " + fiveD.format(aveBin) + " ms ± " + fourD.format(stdBin) + " ms");
-        System.out.println("Standard deviation = " + fourD.format(stdBin) + " ms");
-        System.out.println("Repetitions = " + repetitions);
-        System.out.println("________________________________________________");
+        double avgBinary = (double) totalBinary / runs;
+        double stdBinary = Math.sqrt( (totalBinarySq - runs * avgBinary * avgBinary) / (runs - 1) );
 
-        // here is my final numbers
-        System.out.println("Results:");
-        System.out.printf("Linear avg: %.5f ms, std: %.4f ms\n", aveLin, stdLin);
-        System.out.printf("Binary avg: %.5f ms, std: %.4f ms\n", aveBin, stdBin);
-        System.out.println("=====================================");
+        System.out.println("BINARY SEARCH RESULTS (sorted");
+        System.out.println("--------------------------------------------------");
+        System.out.println("Average time = " + avgFormat.format(avgBinary) + " ms ± " + stdFormat.format(stdBinary) + " ms");
+        System.out.println("Standard deviation = " + stdFormat.format(stdBinary) + " ms");
+        System.out.println("Number of runs = " + runs);
+        System.out.println("--------------------------------------------------");
+
+        // 4 results
+        System.out.println("\n=== FINAL FOUR NUMBERS (for marking) ===");
+        System.out.printf("Linear  avg: %.5f ms    std: %.4f ms\n", avgLinear, stdLinear);
+        System.out.printf("Binary  avg: %.5f ms    std: %.4f ms\n", avgBinary, stdBinary);
+        System.out.println("=======================================");
     }
 
-    // Linear search 
-    static int linearSearch(int key) {
-        for (int i = 0; i < nodes.length; i++) {
-            if (nodes[i].key == key) return i;
+    // linear search
+    static int findLinear(int target) {
+        for (int i = 0; i < bigList.length; i++) {
+            if (bigList[i].number == target) {
+                return i;
+            }
         }
         return -1;
     }
 
-    // Binary search 
-    static int binarySearch(int key) {
-        int low = 0;
-        int high = nodes.length - 1;
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            if (nodes[mid].key == key) return mid;
-            if (nodes[mid].key < key) low = mid + 1;
-            else high = mid - 1;
+    // binary search 
+    static int findBinary(int target) {
+        int left = 0;
+        int right = bigList.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (bigList[mid].number == target) {
+                return mid;
+            }
+            if (bigList[mid].number < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
         }
         return -1;
     }
