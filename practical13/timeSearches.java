@@ -113,14 +113,13 @@ public class timeSearches {
         double stdBinary = Math.sqrt( (totalBinarySq - runs * avgBinary * avgBinary) / (runs - 1) );
 
         System.out.println("BINARY SEARCH RESULTS (sorted");
-        System.out.println("--------------------------------------------------");
         System.out.println("Average time = " + avgFormat.format(avgBinary) + " ms ± " + stdFormat.format(stdBinary) + " ms");
         System.out.println("Standard deviation = " + stdFormat.format(stdBinary) + " ms");
         System.out.println("Number of runs = " + runs);
         System.out.println("--------------------------------------------------");
 
         // 4 results
-        System.out.println("\n=== FINAL FOUR NUMBERS (for marking) ===");
+        System.out.println("Final Results:");
         System.out.printf("Linear  avg: %.5f ms    std: %.4f ms\n", avgLinear, stdLinear);
         System.out.printf("Binary  avg: %.5f ms    std: %.4f ms\n", avgBinary, stdBinary);
         System.out.println("=======================================");
