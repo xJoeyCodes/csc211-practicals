@@ -19,7 +19,7 @@ public class timeSearches {
     public static void main(String[] args) {
 
         // rImporting data from ulysses.numbered file using BufferedReader
-        try (BufferedReader br = new BufferedReader(new FileReader("ulysses.numbered"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("ulysses-1.numbered"))) {
             for (int i = 0; i < N; i++) {
                 String line = br.readLine();
                 if (line == null) break;
