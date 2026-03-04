@@ -91,7 +91,7 @@ public class timeSearches {
 
         // sorted the array
         Arrays.sort(bigList, (a, b) -> Integer.compare(a.number, b.number));
-        System.out.println("Array has been sorted for binary search.");
+        
 
         /// binary search Sorted
         long totalBinary = 0;
