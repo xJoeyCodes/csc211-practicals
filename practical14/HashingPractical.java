@@ -30,7 +30,7 @@ public class HashingPractical {
         }
 
         Pair[] data = Arrays.copyOf(allData, MAX_USABLE);
-        System.out.println("Data ready – " + data.length + " pairs available");
+        System.out.println("Data ready: " + data.length + " pairs available");
 
 
         //  α and target N 
