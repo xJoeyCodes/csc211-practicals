@@ -16,7 +16,6 @@ public class Anagrams {
     }
 
     private static String clean(String w) {
-        // Fixed: hyphen at beginning of [] → treated literally, no range error
         return w.replaceAll("^[-0-9(),.;:_!?\\[\\]]+", "")
                 .replaceAll("[-0-9(),.;:_!?\\[\\]]+$", "")
                 .toLowerCase()
