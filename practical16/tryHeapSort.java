@@ -168,7 +168,7 @@ public class tryHeapSort {
             siftDown(array, end, 0);
         }
     }
-
+    // Swap method for strings
     private static void swap(String[] a, int i, int j) {
         String tmp = a[i];
         a[i] = a[j];
