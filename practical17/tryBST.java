@@ -207,12 +207,12 @@ public class tryBST {
         System.out.println("isBST() after removing evens = " + T.isBST());
         System.out.println("Size after removing evens = " + T.size());
 
-        // timing run with n = 25
-        System.out.println("\nStarting timing run with n = 25...");
+        // timing run with n = 20
+        System.out.println("\nStarting timing run with n = 20...");
 
-        n = 25;
+        n = 20;
         hi = (int) Math.pow(2, n) - 1;
-        int reps = 35;
+        int reps = 30;
 
         double[] populateTimes = new double[reps];
         double[] removeTimes = new double[reps];
